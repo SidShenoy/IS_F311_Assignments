@@ -5,7 +5,8 @@
 
 #include<stdio.h>
 #define PI 3.1415926535898 
-
+float COLOR_OF_TRUNK[3] = {1.0, 1.0, 0.0};
+float COLOR_OF_LEAVES[3] = {0, 1.0, 0};
 void MySphere(GLfloat radius){
   
   GLdouble inc = PI/12;
@@ -24,6 +25,35 @@ void MySphere(GLfloat radius){
   glFlush();
 }
 
+void drawCircle(float cx, float cy, float cz, float r, int num, int start, int end, float* color){
+	glBegin(GL_LINE_STRIP);
+	glColor3f(color[0], color[1], color[2]);
+	for(int i = start; i < end; i++){
+		float theta = 2.0 * 3.14159 * (float)(i % 360) / (float)(num);
+		float x  = r * cosf(theta);
+		float z = r * sinf(theta);
+		glVertex3f(x + cx, cy, z + cz);
+	}
+	glEnd();
+}
+
+void drawTree(float x, float z, float height, float radBase, float radSphere){
+	float height_of_trunk = height - sqrt(radSphere*radSphere - radBase*radBase);
+	float y = 0;
+	while(y <= height_of_trunk){
+		drawCircle(x, y, z, radBase, 360, 0, 360, COLOR_OF_TRUNK);
+		y += 0.5;
+	}
+	y = height;
+	glMatrixMode(GL_MODELVIEW);	
+	//glLoadIdentity();
+	glTranslatef(x, y, z);
+	glColor3f(COLOR_OF_LEAVES[0],COLOR_OF_LEAVES[1],COLOR_OF_LEAVES[2]);
+	glutSolidSphere(radSphere, 12, 24);
+	glFlush();
+}
+
+
 void drawFence(int number, int x1, int z1, int x2, int z2, int height)	// x1 == x2 or z1 ==z2 and x1 < x2 and z1 < z2
 {
 	printf("HELLO");
@@ -34,7 +64,7 @@ void drawFence(int number, int x1, int z1, int x2, int z2, int height)	// x1 == 
 		float zpos = z1;
 		for(int i = 0; i < number; i++){
 			zpos += width;
-			glBegin(GL_LINES);
+			glBegin(GL_QUADS);
 				glVertex3f(x1,0,zpos);
 				glVertex3f(x1,height, zpos);
 				zpos += width;
@@ -48,7 +78,7 @@ void drawFence(int number, int x1, int z1, int x2, int z2, int height)	// x1 == 
 		float xpos = x1;
 		for(int i = 0; i < number; i++){
 			xpos += width;
-			glBegin(GL_LINES);
+			glBegin(GL_QUADS);
 				glVertex3f(xpos,0,z1);
 				glVertex3f(xpos,height, z1);
 				xpos += width;
@@ -60,16 +90,7 @@ void drawFence(int number, int x1, int z1, int x2, int z2, int height)	// x1 == 
 fflush(stdout);	
 }
 
-void DrawCircle(float cx, float cz, float r, int num, int start, int end){
-	glBegin(GL_LINE_STRIP);
-	for(int i = start; i < end; i++){
-		float theta = 2.0 * 3.14159 * (float)(i % 360) / (float)(num);
-		float x  = r * cosf(theta);
-		float z = r * sinf(theta);
-		glVertex3f(x + cx, 0, z + cz);
-	}
-	glEnd();
-}
+
 
 void Display(void)
 {
@@ -87,9 +108,11 @@ void Display(void)
 		glVertex3f(0,0,10);
 	glEnd();
 	glColor3f (1.0, 1.0, 1.0);	
-	DrawCircle(0,0,20,360,280,620);
-	DrawCircle(0,0,30,360,0,361);
-	drawFence(15,-30,30,30,30,10);
+	float white[3] = {1.0, 1.0, 1.0};
+	drawCircle(0,0,0,20,360,280,620,white);
+	drawCircle(0,0,0,30,360,0,361,white);
+	//drawFence(15,-30,30,30,30,10);
+	drawTree(-20, -20, 20, 5, 10);
 	//drawFence(15,-30,30,30,30);
 	//drawFence(15,-30,30,30,30);
 	//drawFence(15,-30,30,30,30);

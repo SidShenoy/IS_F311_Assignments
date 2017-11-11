@@ -36,11 +36,18 @@ void Display(void)
 	MySphere(1.5);
 
   // draw a sphere using builtin primitive
-	glTranslatef(4,0.,0);
+	glMatrixMode(GL_MODELVIEW);	
+	
+	glTranslatef(1, 1, 1);
+	//glColor3f(COLOR_OF_LEAVES[0],COLOR_OF_LEAVES[1],COLOR_OF_LEAVES[2]);
+	glutSolidSphere(2, 12, 24);
+	glFlush();
+	
+	/*glTranslatef(4,0.,0);
 	glRotatef(90,1.,0.,0.); // primitive is sliced along XY not XZ
 	glutSolidSphere(1.5,24,12);
 
-	glFlush();
+	glFlush();*/
 
  
 }
