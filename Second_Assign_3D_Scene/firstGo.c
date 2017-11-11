@@ -5,6 +5,8 @@
 
 #include<stdio.h>
 #define PI 3.1415926535898 
+#define WIDTH_OF_BENCH 5;
+#define LENGTH_OF_BENCH 10;
 float COLOR_OF_TRUNK[3] = {73.0/255, 36.0/255, 0.0};
 float COLOR_OF_LEAVES[3] = {0, 1.0, 0};
 void MySphere(GLfloat radius){
@@ -50,9 +52,45 @@ void drawTree(float x, float z, float height, float radBase, float radSphere){
 	glTranslatef(x, y, z);
 	glColor3f(COLOR_OF_LEAVES[0],COLOR_OF_LEAVES[1],COLOR_OF_LEAVES[2]);
 	glutSolidSphere(radSphere, 12, 24);
+	glTranslatef(-x, -y, -z);
 	glFlush();
 }
 
+void drawBench(float x, float z, float theta_x){
+	float length = LENGTH_OF_BENCH;
+	float width = WIDTH_OF_BENCH;
+	glMatrixMode(GL_MODELVIEW);
+	glColor3f(1,1,1);
+	//glLoadIdentity();
+	glTranslatef(x, 10, z);
+	glRotatef(theta_x, 0, 1, 0);
+	glScalef(length, width, 1);
+	glutSolidCube(1);
+	glScalef(1/length, 1/width, 1);	//rev
+	glRotatef(-theta_x, 0, 1, 0);	//rev
+	glTranslatef(-x, -10, -z);		//rev
+	//glLoadIdentity();
+	glTranslatef(x, 0, z);
+	glRotatef(theta_x, 0, 1 , 0);
+	glTranslatef((-1)*length / 4, 4.75, 0);	
+	glScalef(length / 6, 9.5, width);
+	glutSolidCube(1);
+	glScalef(6 / length, 1/9.5, 1/width);
+	glTranslatef(length / 4, -4.75, 0);
+	glRotatef(-theta_x, 0, 1 , 0);
+	glTranslatef(-x, 0, -z);	
+	//glLoadIdentity();
+	glTranslatef(x,0,z);
+	glRotatef(theta_x, 0, 1, 0);
+	glTranslatef(length/ 4, 4.75, 0);
+	glScalef(length / 6, 9.5 , width);
+	glutSolidCube(1);
+	glScalef(6 / length, 1/9.5, 1/width);
+	glTranslatef(-length / 4, -4.75, 0);
+	glRotatef(-theta_x, 0, 1 , 0);
+	glTranslatef(-x, 0, -z);
+	glFlush();
+}
 
 void drawFence(int number, int x1, int z1, int x2, int z2, int height)	// x1 == x2 or z1 ==z2 and x1 < x2 and z1 < z2
 {
@@ -64,7 +102,7 @@ void drawFence(int number, int x1, int z1, int x2, int z2, int height)	// x1 == 
 		float zpos = z1;
 		for(int i = 0; i < number; i++){
 			zpos += width;
-			glBegin(GL_QUADS);
+			glBegin(GL_LINES);
 				glVertex3f(x1,0,zpos);
 				glVertex3f(x1,height, zpos);
 				zpos += width;
@@ -78,7 +116,7 @@ void drawFence(int number, int x1, int z1, int x2, int z2, int height)	// x1 == 
 		float xpos = x1;
 		for(int i = 0; i < number; i++){
 			xpos += width;
-			glBegin(GL_QUADS);
+			glBegin(GL_LINES);
 				glVertex3f(xpos,0,z1);
 				glVertex3f(xpos,height, z1);
 				xpos += width;
@@ -111,11 +149,12 @@ void Display(void)
 	float white[3] = {1.0, 1.0, 1.0};
 	drawCircle(0,0,0,20,360,280,620,white);
 	drawCircle(0,0,0,30,360,0,361,white);
-	//drawFence(15,-30,30,30,30,10);
-	drawTree(-20, -20, 20, 5, 10);
-	//drawFence(15,-30,30,30,30);
-	//drawFence(15,-30,30,30,30);
-	//drawFence(15,-30,30,30,30);
+	drawFence(15,-30,30,30,30,10);
+	drawFence(15,-30,-30,-30,30,10);
+	drawFence(15,-30,-30,30,-30,10);
+	drawFence(15,30,-30,30,30,10);
+	drawTree(20, 20, 30, 3, 10);
+	drawBench(-7, -7, 60);
 	glFlush();
 
  
