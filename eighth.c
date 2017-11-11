@@ -282,9 +282,9 @@ void Display(void)
 	
 	while(1==1)
 	{
-		glPointSize(20.0);		// sets square fruit size to be = 5 pixels
+		glPointSize(5.0);		// sets square fruit size to be = 5 pixels
 			
-		glColor3f(1.0,0.0,0.0);		// with RED color
+		glColor3f(1.0,1.0,1.0);		// with RED color
 
 		glBegin(GL_POINTS);			
 			glVertex2f(100,400);	// draws the fruit				
@@ -295,7 +295,7 @@ void Display(void)
 	
 		glFlush();
 
-		int milli_seconds = 1000 * 1;
+		int milli_seconds = 1200 * 1;
  
 		// Stroing start time
 		clock_t start_time = clock();

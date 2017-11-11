@@ -24,6 +24,11 @@ compile using : gcc fifth_edited.c -lglut -lGLU -lGL -lm
 #include<string.h>
 #include<stdio.h>
 #define PI 3.1416
+#define R 0					//Default colors for a point
+#define G 1
+#define B 2
+#define SIZE_X 600
+#define SIZE_Y 600
 
 int pos;
 
@@ -33,7 +38,7 @@ int pos;
 // ruleForZero = production rule to replace '0'
 // Assumption : Opening '[' and closing ']' braces stay as it is.
 
-int genNextTreeString(char* treeString, char* ruleForOne, char* ruleForZero){
+int genNextObjectString(char* treeString, char* ruleForOne, char* ruleForZero){
 
 	int prevLen = strlen(treeString);
 	if(prevLen > 1000000){
@@ -61,7 +66,7 @@ int genNextTreeString(char* treeString, char* ruleForOne, char* ruleForZero){
 	return 0;
 }
 
-// Recursive function that actually draws the tree from output of 'genNextTreeString' function 
+// Recursive function that actually draws the tree from output of 'genNextObjectString' function 
 // level = depth of the current branch
 // angle = angle of the current branch
 // currX = x-coordinate of the tip of the current branch
@@ -140,7 +145,7 @@ void Display2(int level,float angle,float currX,float currY,char *arr,int object
 	}
 }
 
-// This function makes use of the 'genNextTreeString' and 'Display2' functions
+// This function makes use of the 'genNextObjectString' and 'Display2' functions
 
 void Display(void)
 {
@@ -162,7 +167,7 @@ void Display(void)
 		int gen1 = random()%3 + 1; 	// setting the generation of the object to be drawn
 	
 		for(j=0;j<=gen1;j++)
-			genNextTreeString(mainString,"11","1[0]1[0]0");		//generating the generations 
+			genNextObjectString(mainString,"11","1[0]1[0]0");		//generating the generations 
 
 		x+=125;				// updating the position of the current tree
 
@@ -180,7 +185,7 @@ void Display(void)
 		int gen2 = random()%4;			// setting the generation of the object to be drawn
 					
 		for(j=0;j<=gen2;j++)
-			genNextTreeString(mainString2,"1","1]1[0");		//generating the generations
+			genNextObjectString(mainString2,"1","1]1[0");		//generating the generations
 
 		x+=15;					// updating the position of the current grass
 
