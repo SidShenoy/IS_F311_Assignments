@@ -9,6 +9,10 @@
 #define LENGTH_OF_BENCH 10;
 float COLOR_OF_TRUNK[3] = {73.0/255, 36.0/255, 0.0};
 float COLOR_OF_LEAVES[3] = {0, 1.0, 0};
+
+float rotate_x = 0;
+float rotate_y = 45;
+
 void MySphere(GLfloat radius){
   
   GLdouble inc = PI/12;
@@ -60,16 +64,8 @@ void drawBench(float x, float z, float theta_x){
 	float length = LENGTH_OF_BENCH;
 	float width = WIDTH_OF_BENCH;
 	glMatrixMode(GL_MODELVIEW);
+	//glLoadIdentity();
 	glColor3f(1,1,1);
-	//glLoadIdentity();
-	glTranslatef(x, 10, z);
-	glRotatef(theta_x, 0, 1, 0);
-	glScalef(length, width, 1);
-	glutSolidCube(1);
-	glScalef(1/length, 1/width, 1);	//rev
-	glRotatef(-theta_x, 0, 1, 0);	//rev
-	glTranslatef(-x, -10, -z);		//rev
-	//glLoadIdentity();
 	glTranslatef(x, 0, z);
 	glRotatef(theta_x, 0, 1 , 0);
 	glTranslatef((-1)*length / 4, 4.75, 0);	
@@ -89,6 +85,15 @@ void drawBench(float x, float z, float theta_x){
 	glTranslatef(-length / 4, -4.75, 0);
 	glRotatef(-theta_x, 0, 1 , 0);
 	glTranslatef(-x, 0, -z);
+	//glLoadIdentity();
+	glColor3f(0,1,1);
+	glTranslatef(x, 10, z);
+	glRotatef(theta_x, 0, 1, 0);
+	glScalef(length, 1, width);
+	glutSolidCube(1);
+	glScalef(1/length, 1, 1/width);	//rev
+	glRotatef(-theta_x, 0, 1, 0);	//rev
+	glTranslatef(-x, -10, -z);		//rev
 	glFlush();
 }
 
@@ -128,11 +133,35 @@ void drawFence(int number, int x1, int z1, int x2, int z2, int height)	// x1 == 
 fflush(stdout);	
 }
 
+void specialKeys( int key, int x, int y ) {
+ 
+  //  Right arrow - increase rotation by 5 degree
+  if (key == GLUT_KEY_RIGHT)
+    rotate_y += 0.2;
+ 
+  //  Left arrow - decrease rotation by 5 degree
+  else if (key == GLUT_KEY_LEFT)
+    rotate_y -= 0.2;
+ 
+  else if (key == GLUT_KEY_UP)
+    rotate_x += 0.2;
+ 
+  else if (key == GLUT_KEY_DOWN)
+    rotate_x -= 0.2;
+ 
 
+  //  Request display update
+  glutPostRedisplay();
+ 
+}
 
 void Display(void)
 {
+	glMatrixMode (GL_MODELVIEW);
+	glLoadIdentity (); 
 
+	gluLookAt(100*sin(rotate_y),100*sin(rotate_x),100*cos(rotate_y)*cos(rotate_x), 0,0,0,0.,1.,0.); //done
+	
 	glClear (GL_COLOR_BUFFER_BIT);
 	glBegin(GL_LINES);
 		glColor3f (1.0, 0.0, 0.0);
@@ -153,7 +182,7 @@ void Display(void)
 	drawFence(15,-30,-30,-30,30,10);
 	drawFence(15,-30,-30,30,-30,10);
 	drawFence(15,30,-30,30,30,10);
-	drawTree(20, 20, 30, 3, 5);
+	drawTree(20, 20, 30, 3, 10);
 	drawBench(-7, -7, 60);
 	glFlush();
 
@@ -170,10 +199,7 @@ void reshape (int w, int h)
     glMatrixMode (GL_PROJECTION);
     glLoadIdentity();
 	glFrustum (-10*(GLfloat)w/h,10*(GLfloat)w/h, -10,10, 50, 200.0);
-    glMatrixMode (GL_MODELVIEW);
-	glLoadIdentity (); 
-
-	gluLookAt(0,100,100, 0,0,0,0.,1.,0.); //done
+    
 }
 
 
@@ -197,6 +223,6 @@ void main(int argc, char* argv[])
   init();
   glutDisplayFunc(Display);
   glutReshapeFunc(reshape);
-
+  glutSpecialFunc(specialKeys);
   glutMainLoop();
 }
